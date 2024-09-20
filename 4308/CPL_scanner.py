@@ -3,7 +3,7 @@ import json
 import sys
 import re
 
-# Group members (David Quintanilla)
+# Group members (David Quintanilla), (Ernesto Perez), (Melike Ozcelik), (Alex Vuong)
 
 # Function to tokenize a line based on the SCL grammar
 # This function uses a regular expression to split a line of code into its components (tokens)
