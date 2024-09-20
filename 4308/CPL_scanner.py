@@ -39,7 +39,7 @@ def filter_file(file_name):
     in_hanging_comment = False  # Flag to track if we're inside a hanging comment
 
  # Iterate through each line in the file
-    for line in file:
+    for line in lines: #changed for line in file to for line in lines
         # Detect the start of a multi-line comment
         if 'description' in line or line.startswith("/*"):
             in_hanging_comment = True
@@ -63,21 +63,20 @@ def filter_file(file_name):
 # Function to categorize the tokens
 ident_counter = 3000
 identifier_map = {}
-
 # Function to categorize tokens
 def categorize_token(token):
-    global identifier_counter
+    global ident_counter # changing identifier_counte with ident_counter
     # Check if the token is a keyword
     if token in tokenList["keywords"]:
         return {"Type": "Keyword", "id": tokenList["keywords"][str(token)], "value": token}
      # Check if the token is an identifier (a variable or function name)
     elif re.match(r'^[a-zA-Z_]\w*$', token):
-        if token in identifier_map:
+        if token in identifier_map: # changing identifier_counte with ident_counter
             return {"Type": "Identifier", "id": identifier_map[token], "value": token}
         # Assign a unique ID to the identifier and increment the counter
-        identifier_map[token] = identifier_counter
-        result = {"Type": "Identifier", "id": identifier_counter, "value": token}
-        identifier_counter += 1
+        identifier_map[token] = ident_counter
+        result = {"Type": "Identifier", "id": ident_counter, "value": token}
+        ident_counter += 1 # changing identifier_counte with ident_counter
         return result
     # Check if the token is a numeric literal (e.g., an integer or decimal number)
     elif re.match(r'^[0-9]+(\.[0-9]+)?$', token):
