@@ -1,5 +1,7 @@
 from CPL_scanner import filter_file, categorize_token, Token
 
+# Group members (David Quintanilla), (Ernesto Perez), (Melike Ozcelik), (Alex Vuong)
+
 # The Parser class is responsible for parsing tokens from the scanner based on welcome.scl 
 class Parser:
     def __init__(self, token_list):
