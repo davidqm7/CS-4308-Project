@@ -8,10 +8,11 @@ class Parser:
         self.token_list = token_list    # The list of tokens from the scanner
         self.current_token_index = 0    # Track the current token being processed
         self.symbol_table = {}     # Store declared identifiers
+        self.root = None
 
     # Public function to get the next token
     def getNextToken(self):
-        
+        return
 
     # Public function to check if an identifier exists
     def identifierExists(self, identifier):
@@ -19,27 +20,31 @@ class Parser:
 
     # Public function to start parsing
     def begin(self):
-
+        self.root = self.start() # Creates the root of the parse tree
+        return
       
 
     # Private function to parse a program
-    def program(self):
+    def start(self):
         token = self.getNextToken()   # Get the first token, expected to be 'begin'
         if token.value == "begin":   # If the token is 'begin', move to parse the statement list
-            self.statement_list()
+            statements_node = self.statement_list()
             token = self.getNextToken()
             if token.value != "end":     # If 'end' is not found, raise an error
                 self.error("Expected 'end'")
+            return Node("begin", left = statements_node) # Builds parse tree of statement nodes
         else:
             self.error("Expected 'begin'")       # If the program doesn't start with 'begin', raise an error
  
     # Private function to parse a list of statements
     def statement_list(self):
-        self.statement()     # Parse the first statement
+        statement_node = self.statement()     # Parse the first statement
         token = self.getNextToken()   # Get the next token, expected to be either a statement or a semicolon
-        while token and token.value == ";":
-            self.statement()   # If a semicolon is found, continue parsing more statements
-            token = self.getNextToken()   # Get the next token for the next iteration
+        if token.value != "endfun" or "endif":
+            self.getNextToken
+            next_statement_node = self.statement_list()
+            return Node("statement", left = statement_node, right = next_statement_node)
+        return Node("statement", left = statement_node)
 
     # Private function to parse a statement
     def statement(self):
@@ -52,6 +57,10 @@ class Parser:
             self.if_statement()     # If the token is 'if', parse an if-statement
         elif token.value == "display":
             self.display_statement()  # If the token is 'display', parse a display statement
+        elif token.value == "set":
+            self.set_statement()
+        elif token.value == "input":
+            self.input_statement()
         else:
             self.error(f"Unexpected statement: {token.value}")   # If none of the valid statement types match, raise an error
 
@@ -73,41 +82,78 @@ class Parser:
         token = self.getNextToken()   # Expect the next token to be '='
         if token.value != "=":
             self.error("Expected '=' after identifier")  # If '=' is not found, raise an error
-        self.expression()    # Parse the expression on the right side of the assignment
+        expr_node = self.expression()    # Parse the expression on the right side of the assignment
+        return Node("=", left = expr_node)
 
     # Private function to handle 'if' statements
     def if_statement(self):
-        self.condition()
+        condition_node = self.condition()
         token = self.getNextToken()
         if token.value != "then":   # Expect the next token to be 'then'
           self.error("Expected 'then' after condition")
-        self.statement_list()
+        then_node = self.statement_list()
         token = self.getNextToken()  # Expect the next token to be 'endif'
         if token.value != "endif":  # If 'endif' is not found, raise an error
             self.error("Expected 'endif' after statement list")
+        return Node("if", left = condition_node, right = then_node)
 
     # Private function to handle display statements
     def display_statement(self):
-        self.expression()
+        expr_node = self.expression()
+        return Node("display", left = expr_node)
 
     # Private function to handle expressions
     def expression(self):
         token = self.getNextToken()  # Get the next token to check if it's a valid expression
         if token.type not in ["Identifier", "NumericLiteral", "StringLiteral"]:
             self.error(f"Unexpected expression: {token.value}")  # If the token is not a valid expression, raise an error
+        return Node(token.value)
 
     # Private function to handle conditions
     def condition(self):
-        self.expression()  # Parse the left-hand expression of the condition
+        left_expression = self.expression()  # Parse the left-hand expression of the condition
         token = self.getNextToken()  # Get the next token, expected to be a relational operator
         if token.value not in ["equal", "greater"]:   # If the token is not a valid relational operator, raise an error
             self.error(f"Unexpected relational operator: {token.value}")
-        self.expression()   # Parse the right-hand expression of the condition
+        operator = token.value
+        right_expression = self.expression()   # Parse the right-hand expression of the condition
+        return Node("condition", left = left_expression, right = Node(operator, left = right_expression))
+    
+    # Private function to handle set statements
+    def set_statement(self):
+        token = self.getNextToken
+        if token.type != "Identifier":
+            self.error(f"Unexpected identifier: {token.value}")
+        var_node = token.value
+        assignment_node = self.assignment(token)
+        return Node("set", Node(var_node), assignment_node)
+    
+    # Private function to handle input statements
+    def input_statement(self):
+        token = self.getNextToken
+        if token.type != "StringLiteral":
+            self.error(f"Unexpected String: {token.value}")
+        message_node = token.value
+        token = self.getNextToken
+        if token.value != ",":
+            self.error("Expected ','")
+        token = self.getNextToken
+        if token.type != "Identifier":
+            self.error(f"Unexpected identifier {token.value}")
+        var_node = token.value
+        return Node("input", Node(message_node), Node(var_node))
 
     # Private error handling
     def error(self, message):
         print(f"Parsing error: {message}")  # Print the error message
         sys.exit(1)   # Terminate the program with an error
+
+class Node:
+    def __init__(self, value, left = None, right = None):
+        self.value = value
+        self.left = left
+        self.right = right
+
  
 
 # Run the parser on the scanned tokens
