@@ -12,7 +12,18 @@ class Parser:
 
     # Public function to get the next token
     def getNextToken(self):
-        return
+        #Melike
+         # Loop to skip over any comment tokens
+        while self.current_token_index < len(self.token_list):
+            token = self.token_list[self.current_token_index]
+            self.current_token_index += 1
+
+            # If the token is not a comment, return it
+            if token.type != "Comment":
+                return token
+        
+        # If no more tokens are available, return None
+        return None
 
     # Public function to check if an identifier exists
     def identifierExists(self, identifier):
