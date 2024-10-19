@@ -123,15 +123,15 @@ if __name__ == '__main__':
 
 
 # Convert the token list to a dictionary and save to JSON
-for idx, token in enumerate(final_token_list):
-    token_str = "Token_" + str(idx)  # Create a unique token identifier
-    token_data = token.getData()   # Get the token data (Type, id, value)
-    token_dict[token_str] = {"Type": token_data[0], "id": token_data[1], "value": token_data[2]}
+    for idx, token in enumerate(final_token_list):
+        token_str = "Token_" + str(idx)  # Create a unique token identifier
+        token_data = token.getData()   # Get the token data (Type, id, value)
+        token_dict[token_str] = {"Type": token_data[0], "id": token_data[1], "value": token_data[2]}
 
-# Write the tokens to a JSON file for output
-with open('OutputTokens.json', 'w') as f:
-        json.dump(token_dict, f, indent=4)
+    # Write the tokens to a JSON file for output
+    with open('OutputTokens.json', 'w') as f:
+            json.dump(token_dict, f, indent=4)
 
-print(f'Tokens written to OutputTokens.json')  # Notify the user that the tokens have been written
+    print(f'Tokens written to OutputTokens.json')  # Notify the user that the tokens have been written
 
    
