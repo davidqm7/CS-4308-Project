@@ -47,11 +47,11 @@ tokenList = {
 }
 
 class Token:
-    def __init__(self, type, id, value):
-        self.type = type
-        self.id = id
+    def __init__(self, types, ide, value):
+        self.type = types
+        self.id = ide
         self.value = value
 
-    def getData(self):
+    def getdata(self):
         return [self.type, self.id, self.value]
         
