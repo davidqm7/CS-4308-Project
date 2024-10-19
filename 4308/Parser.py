@@ -1,6 +1,7 @@
 import sys
 from Token import Token  # Keep if you will create Token instances
 
+# Group members (David Quintanilla), (Ernesto Perez), (Melike Ozcelik), (Alex Vuong)
 
 class Parser:
     def __init__(self, tokens_list):
