@@ -1,17 +1,19 @@
 import sys
 import json
 from CPL_scanner import filter_file, categorize_token, Token
+from Node import Node
 
 # Group members (David Quintanilla), (Ernesto Perez), (Melike Ozcelik), (Alex Vuong)
 
 # The Parser class is responsible for parsing tokens from the scanner based on welcome.scl 
 class Parser:
+    root = None
+
     def __init__(self, token_list):
         self.token_list = token_list    # The list of tokens from the scanner
         self.current_token_index = 30    # Track the current token being processed
         self.symbol_table = {}     # Store declared identifiers
-        self.root = None
-
+        
     # Public function to get the next token
     def getNextToken(self):
         #Melike
@@ -209,43 +211,24 @@ class Parser:
     def error(self, message):
         print(f"Parsing error: {message}")  # Print the error message
         sys.exit(1)   # Terminate the program with an error
+    
+    def tokens(file_name):
+        with open(file_name, 'r') as file:
+            json_data = file.read()  # Read the contents of the file
 
-class Node:
-    def __init__(self, value, left = None, right = None):
-        self.value = value
-        self.left = left
-        self.right = right
-
-    # Prints tree in preorder traversal
-    def __str__(self):
-        return f"{self.value}"  # Return the value of the node as a string
-
-    # Prints tree in preorder traversal
-    def print_tree(self, level=0):
-        indent = ' ' * (level * 4)
-        if self.value != "statement" and self.value != "condition":
-            print(f"{indent}|{self.value}")  # Print the current node's value
-        if self.left is not None:
-            self.left.print_tree(level + 1)  # Recursively print the left child
-        if self.right is not None:
-            self.right.print_tree(level + 1)  # Recursively print the right child
-
- 
+        # Parse the JSON data
+        data = json.loads(json_data)    # Use the scanner to get the tokenized lines of the input file
+    
+        # Flatten the token list
+        token_list = [(token_info['Type'], token_info['id'], token_info['value']) for token_info in data.values()]
+        return token_list
 
 # Run the parser on the scanned tokens
 if __name__ == "__main__":
    
     file_name = sys.argv[1]  # Get the file name of the source SCL code from the command line arguments #changes by ernesto- set sys.argv to 0 and imported sys
-    with open(file_name, 'r') as file:
-        json_data = file.read()  # Read the contents of the file
-
-    # Parse the JSON data
-    data = json.loads(json_data)    # Use the scanner to get the tokenized lines of the input file
     
-    # Flatten the token list
-    token_list = [(token_info['Type'], token_info['id'], token_info['value']) for token_info in data.values()]
-
-    parser = Parser(token_list)    # Create a Parser instance with the token list
+    parser = Parser(Parser.tokens(file_name))    # Create a Parser instance with the token list
     parser.begin()
     parser.root.print_tree()
     print("Parsing completed successfully.")
