@@ -1,3 +1,5 @@
+import sys
+from Parser import Parser
 class Executer:
   def __init__(self, program, memory):
     self.program = program
@@ -53,6 +55,13 @@ def evaluate_condition(self, condition):
     return condition.operator.apply(left, right)
   elif isinstance(condition, ast.Identifier):
     return bool(self.memory[condition.name])
+
+if __name__ == "__main__":
+    file_name = sys.argv[1]  # Get the file name of the source SCL code from the command line arguments #changes by ernesto- set sys.argv to 0 and imported sys
+    
+    parser = Parser(Parser.tokens(file_name))    # Create a Parser instance with the token list
+    parser.begin()
+    parser.root.print_tree()
   
   
     
