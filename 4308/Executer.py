@@ -38,7 +38,32 @@ def execute_statement(self, statement):
     else:
       self.execute_statement(statement.else_block)
 
+def getStr(self, letr): #method to return string that exculde quotes and commas
+  result= re.search("\"(.*)\"",letr )
+  return result.group(1)
+
+
 def evaluate_expression(self, expression):
+
+  
+precedence = {"*":1, "/": 1, "+":2, "-":2}
+
+  Lexelist=[] #List of variables
+  OperList=[] #List of Operations
+  linelexems = expression.getScanLine().getLex
+
+  explex = linelexems[3: len(linelexems)]
+
+  for lexme in explex:
+    if lexme.getToken: #if token is there then append it
+      Lexelist.append(lexme)
+    elif lexme.getToken(): #retrieve token
+      while len(OperList) != 0 and precedence[OperList[len(OperList)-1]] <= precedence[lexme.getLexStr()]: #determine precedence of object
+        Lexelist.append(lexme(OperList[len(OperList)-1], Token.findToken(OperList.pop()))) #append at a specific token
+    OperList.append(lexme.getLexStr()) #append lexeme list at string
+
+
+
   if isinstance(expression, ast.BinaryOperation):
     left = self.evaluate_expression(expression.left)
     right = self.evaluate_expression(expression.right)
