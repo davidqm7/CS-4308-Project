@@ -1,5 +1,7 @@
 import sys
 from Parser import Parser
+
+# Group members (David Quintanilla), (Ernesto Perez), (Melike Ozcelik), (Alex Vuong)
 class Executer:
   def __init__(self, program, memory):
     self.program = program
