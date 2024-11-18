@@ -48,6 +48,8 @@ class Executer:
         elif node.value == "endfun":
             # Handle end function
             return
+        elif node.value == "exit":
+            return 
         else:
             raise RuntimeError(f"Unexpected node value: {node.value}")
 
@@ -69,7 +71,7 @@ class Executer:
             left = self.evaluate_node(node.left)
             right = self.evaluate_node(node.right)
             return self.evaluate_condition(node.value, left, right)
-        elif node.value in ["*","+","-","/"]:
+        elif node.value in ["*","+","-","/","^"]:
             #mathematical operators
             return self.evaluate_condition(node.value, left, right)
         else:
